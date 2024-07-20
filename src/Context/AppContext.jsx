@@ -4,7 +4,7 @@ export const AppContext = createContext()
 
 export default function AppProvider({ children }) {
     const [token, setToken] = useState(localStorage.getItem('token'))
-    const [user, setUser] = useState({})
+    const [user, setUser] = useState(null)
 
     async function getUser() {
         // get authenticated user
@@ -15,7 +15,9 @@ export default function AppProvider({ children }) {
         })
         const data = await res.json()
 
-        console.log(data)
+        if(res.ok) {
+            setUser(data)
+        }
     }
 
     // call the getUser method whenever the token is updated
@@ -26,7 +28,7 @@ export default function AppProvider({ children }) {
     }, [token])
 
     return (
-        <AppContext.Provider value={{ token, setToken }}>
+        <AppContext.Provider value={{ token, setToken, user, setUser }}>
             {children}
         </AppContext.Provider>
     )
